@@ -1,8 +1,8 @@
 {
   "site": {
-    "title": "Hydrogen Nextjs",
+    "title": "قيس العصا",
     "base_url": "/",
-    "favicon": "/images/developer.png"
+    "favicon": "/images/qais.png"
   },
 
   "settings": {
@@ -12,16 +12,16 @@
   },
 
   "profile": {
-    "name": "Michael Caine",
-    "image": "/images/developer.png",
-    "designation": "Front-end developer",
-    "bio": "A Full Stack Front-end Developer based in New York. Meticulous web developer with over 2 years of front end experience and passion for responsive and mobile-first website design."
+    "name": "قيس العصا",
+    "image": "/images/qais.png",
+    "designation": "تحسيبي نظري ومطور بلوكتشين",
+    "bio": ""
   },
 
   "params": {
     "contact_form_action": "#",
     "tag_manager_id": "",
-    "copyright": "Copyright © 2022 a theme by [statichunt](https://statichunt.com)"
+    "copyright": "Qasawa © 2024"
   },
 
   "metadata": {

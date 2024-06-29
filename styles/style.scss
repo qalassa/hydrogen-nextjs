@@ -15,3 +15,12 @@
 @layer utilities {
   @import "utilities";
 }
+
+html {
+  direction: rtl;
+}
+
+body {
+  text-align: right;
+}
+
