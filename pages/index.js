@@ -1,3 +1,4 @@
+// pages/index.js
 import config from "@config/config.json";
 import social from "@config/social.json";
 import Base from "@layouts/Baseof";
@@ -5,15 +6,16 @@ import ImageFallback from "@layouts/components/ImageFallback";
 import Pagination from "@layouts/components/Pagination";
 import Post from "@layouts/components/Post";
 import Social from "@layouts/components/Social";
-import { getSinglePage } from "@lib/contentParser";
 import { sortByDate } from "@lib/utils/sortFunctions";
 import { markdownify } from "@lib/utils/textConverter";
+import client from '../lib/contentful';
+
 const { blog_folder } = config.settings;
 
 const Home = ({ posts }) => {
   const { pagination } = config.settings;
   const { name, image, designation, bio } = config.profile;
-  const sortPostByDate = sortByDate(posts);
+  const sortedPosts = sortByDate(posts);
 
   return (
     <Base>
@@ -49,7 +51,7 @@ const Home = ({ posts }) => {
           <div className="row">
             <div className="mx-auto lg:col-10">
               <div className="row">
-                {sortPostByDate.slice(0, pagination).map((post, i) => (
+                {sortedPosts.slice(0, pagination).map((post, i) => (
                   <Post
                     className="col-12 mb-6 sm:col-6"
                     key={"key-" + i}
@@ -73,12 +75,20 @@ const Home = ({ posts }) => {
 
 export default Home;
 
-// for homepage data
 export const getStaticProps = async () => {
-  const posts = getSinglePage(`content/${blog_folder}`);
+  // Fetch posts from Contentful
+  const res = await client.getEntries({ content_type: 'article' });
+  const posts = res.items.map(item => ({
+    title: item.fields.title,
+    slug: item.fields.slug,
+    body: item.fields.body,
+    // add other fields as needed
+  }));
+
   return {
     props: {
-      posts: posts,
+      posts,
     },
+    revalidate: 1, // Revalidate every 1 second
   };
 };
