@@ -24,8 +24,8 @@ export const getStaticProps = async ({ params }) => {
   try {
     const postRes = await getArticle(single);
 
-    if (!postRes) {
-      console.log(`No post found for slug: ${single}`);
+    if (!postRes || !postRes.details) {
+      console.log(`No post or post details found for slug: ${single}`);
       return { notFound: true };
     }
 
@@ -44,3 +44,4 @@ export const getStaticProps = async ({ params }) => {
     return { notFound: true };
   }
 };
+
