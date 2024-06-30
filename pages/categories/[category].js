@@ -3,7 +3,7 @@ import client from '@lib/contentful';
 import Base from '@layouts/Baseof';
 import Post from '@layouts/components/Post';
 
-const Category = ({ posts, slug }) => {
+const Category = ({ posts, category }) => {
   if (!posts.length) {
     return <div>No posts found for this category</div>;
   }
@@ -14,10 +14,15 @@ const Category = ({ posts, slug }) => {
         <div className="container">
           <div className="row">
             <div className="mx-auto lg:col-10">
-              <h1 className="text-center capitalize">{slug}</h1>
+              <h1 className="text-center capitalize">{category}</h1>
               <div className="row pt-12">
                 {posts.map((post, i) => (
-                  <Post className="mb-6 sm:col-6" key={`key-${i}`} post={post} />
+                  <Post
+                    className="mb-6 sm:col-6"
+                    key={`key-${i}`}
+                    post={post}
+                    href={`/categories/${category}/${post.slug}`}
+                  />
                 ))}
               </div>
             </div>
@@ -56,7 +61,6 @@ export const getStaticProps = async ({ params }) => {
 
     const posts = res.items.map((item) => ({
       title: item.fields.title,
-      body: item.fields.body,
       slug: item.fields.slug,
       publishedDate: item.fields.publishedDate,
       categories: item.fields.categories,
@@ -67,11 +71,11 @@ export const getStaticProps = async ({ params }) => {
     return {
       props: {
         posts: JSON.parse(JSON.stringify(sortedPosts)),
-        slug: decodeURIComponent(params.category),
+        category: decodeURIComponent(params.category),
       },
     };
   } catch (error) {
     console.error(`Error fetching posts for category ${params.category}:`, error);
-    return { props: { posts: [], slug: decodeURIComponent(params.category) } };
+    return { props: { posts: [], category: decodeURIComponent(params.category) } };
   }
 };
