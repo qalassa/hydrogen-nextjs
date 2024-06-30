@@ -1,7 +1,7 @@
 import client from '@lib/contentful';
 import Base from '@layouts/Baseof';
 import Post from '@layouts/components/Post';
-
+//m
 const Category = ({ posts, slug }) => {
   return (
     <Base>
