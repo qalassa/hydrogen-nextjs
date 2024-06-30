@@ -79,6 +79,9 @@ export const getStaticProps = async ({ params }) => {
     // Serialize the content to MDX format
     const mdxSource = await serialize(content);
 
+    console.log("Post fetched:", post);
+    console.log("MDX Source:", mdxSource);
+
     return {
       props: {
         post: {
