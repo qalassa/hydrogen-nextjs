@@ -38,6 +38,7 @@ export const getStaticPaths = async () => {
 };
 
 
+
 export const getStaticProps = async ({ params }) => {
   try {
     const res = await client.getEntries({
