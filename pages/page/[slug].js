@@ -35,7 +35,6 @@ export default BlogPagination;
 
 // get blog pagination slug
 export const getStaticPaths = async () => {
-  // Fetch all articles from Contentful
   const res = await client.getEntries({ content_type: 'article' });
   const allPosts = res.items;
 
@@ -44,37 +43,4 @@ export const getStaticPaths = async () => {
 
   for (let i = 1; i <= totalPages; i++) {
     paths.push({
-      params: {
-        slug: i.toString(),
-      },
-    });
-  }
-
-  return {
-    paths,
-    fallback: false,
-  };
-};
-
-// get blog pagination content
-export const getStaticProps = async ({ params }) => {
-  const currentPage = parseInt((params && params.slug) || '1');
-  
-  // Fetch all articles from Contentful
-  const res = await client.getEntries({ content_type: 'article' });
-  const posts = res.items.map((item) => ({
-    title: item.fields.title,
-    slug: item.fields.slug,
-    publishedDate: item.fields.publishedDate,
-    category: item.fields.category,
-    content: item.fields.body,
-  }));
-
-  return {
-    props: {
-      pagination,
-      posts: JSON.parse(JSON.stringify(posts)), // Ensure serializability
-      currentPage,
-    },
-  };
-};
+      para
