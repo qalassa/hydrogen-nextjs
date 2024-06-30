@@ -25,7 +25,7 @@ const PostSingle = ({ post, mdxContent, slug, posts }) => {
   }
 
   const { title, date, image, author, categories } = frontmatter;
-description = description || (typeof content === 'string' ? content.slice(0, 120) : 'Default description or other handling logic');
+  const description = description || (typeof content === 'string' ? content.slice(0, 120) : 'Default description or other handling logic');
   const similarPosts = similerItems(post, posts, slug); // Make sure this function can handle undefined post value
 
   return (
