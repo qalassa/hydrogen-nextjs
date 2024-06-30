@@ -30,7 +30,7 @@ const PostSingle = ({ post }) => {
                   />
                 )}
                 <div className="content text-left">
-                  <MDXRemote {...content} components={shortcodes} />
+                  {content && <MDXRemote {...content} components={shortcodes} />}
                 </div>
               </article>
             </div>
