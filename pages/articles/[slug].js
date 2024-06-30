@@ -20,20 +20,21 @@ export default Article;
 
 export const getStaticPaths = async () => {
   const res = await client.getEntries({
-    content_type: 'category'  // Assuming 'category' is your content type for categories
+    content_type: 'article'  // Ensure this matches the content type ID for your articles in Contentful
   });
 
   const paths = res.items.map((item) => ({
     params: {
-      category: item.fields.slug,  // Assuming you use slugs for categories
+      slug: item.fields.slug,  // This should be the field name for the slug in your Contentful article model
     },
   }));
 
   return {
     paths,
-    fallback: false,
+    fallback: 'blocking',  // Consider using 'blocking' to generate paths on-demand if not pre-built at build time
   };
 };
+
 
 export async function getStaticProps({ params }) {
   try {
