@@ -1,4 +1,3 @@
-// pages/index.js
 import config from "@config/config.json";
 import social from "@config/social.json";
 import Base from "@layouts/Baseof";
@@ -8,7 +7,7 @@ import Post from "@layouts/components/Post";
 import Social from "@layouts/components/Social";
 import { sortByDate } from "@lib/utils/sortFunctions";
 import { markdownify } from "@lib/utils/textConverter";
-import client from '../lib/contentful';
+import { getAllArticles } from '../lib/api';
 
 const { blog_folder } = config.settings;
 
@@ -77,17 +76,18 @@ export default Home;
 
 export const getStaticProps = async () => {
   // Fetch posts from Contentful
-  const res = await client.getEntries({ content_type: 'article' });
-  const posts = res.items.map(item => ({
-    title: item.fields.title,
-    slug: item.fields.slug,
-    body: item.fields.body,
-    // add other fields as needed
-  }));
+  const posts = await getAllArticles();
 
   return {
     props: {
-      posts,
+      posts: posts.map(post => ({
+        title: post.title,
+        slug: post.slug,
+        summary: post.summary,
+        categoryName: post.categoryName,
+        authorName: post.authorName,
+        articleImage: post.articleImage,
+      })),
     },
     revalidate: 1, // Revalidate every 1 second
   };
