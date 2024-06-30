@@ -1,10 +1,8 @@
-// pages/categories/[category]/[slug].js
 import client from '@lib/contentful';
 import Base from '@layouts/Baseof';
-import Post from '@layouts/components/Post';
 import { MDXRemote } from 'next-mdx-remote';
 import Image from 'next/image';
-import shortcodes from "@shortcodes/all";  // Ensure this import is correct based on your project structure
+import shortcodes from "@shortcodes/all";
 
 const PostSingle = ({ post }) => {
   if (!post) {
@@ -48,7 +46,6 @@ export default PostSingle;
 export const getStaticPaths = async () => {
   const res = await client.getEntries({ content_type: 'article' });
 
-  // Ensure each item has categories and the categories array is not empty
   const paths = res.items
     .filter(item => item.fields.categories && item.fields.categories.length > 0)
     .map(item => {
@@ -80,7 +77,7 @@ export const getStaticProps = async ({ params }) => {
       props: {
         post: {
           frontmatter: post.fields,
-          content: post.fields.body, // assuming body contains the MDX content
+          content: post.fields.body, // assuming this contains the MDX content
         },
       },
     };
