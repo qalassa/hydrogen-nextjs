@@ -3,13 +3,18 @@ import client from '@lib/contentful';
 import PostSingle from '@layouts/PostSingle';
 
 const Article = ({ post, content, slug, posts }) => {
-  if (!post) {
-    return <div>Post not found</div>;
+  if (!post || post.length === 0) {
+    console.error('No post data available');
+    return <div>No post data available.</div>;
   }
+
+  const { frontmatter } = post[0];  // Assuming frontmatter is a property you expect
+
   return (
     <PostSingle content={content} slug={slug} post={post} posts={posts} />
   );
 };
+
 
 export default Article;
 
