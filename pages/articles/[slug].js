@@ -1,5 +1,4 @@
-import { BLOCKS, INLINES } from '@contentful/rich-text-types';
-import { documentToPlainTextString } from '@contentful/rich-text-plain-text-renderer';
+import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import client from '@lib/contentful';
 import PostSingle from '@layouts/PostSingle';
 
@@ -14,7 +13,7 @@ export default Article;
 export const getStaticPaths = async () => {
   const res = await client.getEntries({ content_type: 'article' });
   const paths = res.items.map((item) => ({
-    params: { single: item.fields.slug },
+    params: { slug: item.fields.slug.toString() }, // Ensure slug is a string
   }));
 
   return {
@@ -24,15 +23,18 @@ export const getStaticPaths = async () => {
 };
 
 export const getStaticProps = async ({ params }) => {
-  const { single } = params;
+  const { slug } = params;
+
   const allPosts = await client.getEntries({ content_type: 'article' });
   const postRes = await client.getEntries({
     content_type: 'article',
-    'fields.slug': single,
+    'fields.slug': slug,
   });
 
   const post = postRes.items[0];
-  const mdxContent = post ? documentToPlainTextString(post.fields.body) : '';
+
+  // Convert rich text to a JSON object for serialization
+  const mdxContent = post ? JSON.parse(JSON.stringify(post.fields.body)) : '';
 
   const posts = allPosts.items.map((item) => ({
     title: item.fields.title,
@@ -46,7 +48,7 @@ export const getStaticProps = async ({ params }) => {
     props: {
       post: post ? JSON.parse(JSON.stringify(post.fields)) : null,
       mdxContent,
-      slug: single,
+      slug,
       posts: JSON.parse(JSON.stringify(posts)),
     },
   };
