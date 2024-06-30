@@ -19,22 +19,24 @@ const Article = ({ article }) => {
 export default Article;
 
 export const getStaticPaths = async () => {
-  const res = await client.getEntries({
-    content_type: 'article'  // Ensure this matches the content type ID for your articles in Contentful
-  });
+  try {
+    const res = await client.getEntries({ content_type: 'article' });
 
-  const paths = res.items.map((item) => ({
-    params: {
-      slug: item.fields.slug,  // This should be the field name for the slug in your Contentful article model
-    },
-  }));
+    const paths = res.items.map((item) => ({
+      params: { slug: item.fields.slug },
+    }));
 
-  return {
-    paths,
-    fallback: 'blocking',  // Consider using 'blocking' to generate paths on-demand if not pre-built at build time
-  };
+    console.log("Generated paths:", paths);
+
+    return {
+      paths,
+      fallback: 'blocking',
+    };
+  } catch (error) {
+    console.error("Error in getStaticPaths:", error);
+    throw error;
+  }
 };
-
 
 export async function getStaticProps({ params }) {
   try {
@@ -44,16 +46,17 @@ export async function getStaticProps({ params }) {
     });
 
     if (!items.length) {
+      console.error(`No articles found for slug: ${params.slug}`);
       return { notFound: true };
     }
 
+    console.log("Fetched article:", items[0]);
+
     return {
-      props: {
-        article: items[0],
-      },
+      props: { article: items[0] },
     };
   } catch (error) {
-    console.error("Error fetching article:", error);
+    console.error(`Error fetching article for slug: ${params.slug}`, error);
     return { notFound: true };
   }
 }
