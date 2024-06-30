@@ -6,27 +6,27 @@
     },
     {
       "name": "المنطق",
-      "url": "/logic"
+      "url": "/categories/logic"
     },
     {
       "name": "علم التحسيب",
-      "url": "/cs"
+      "url": "categories//cs"
     },
     {
       "name": "علم التحسيب النظري",
-      "url": "/theoreticalcs"
+      "url": "categories//theoreticalcs"
     },
     {
       "name": "البرمجة",
-      "url": "/programming"
+      "url": "categories//programming"
     },
     {
       "name": "الفلسفة",
-      "url": "/philosophy"
+      "url": "categories//philosophy"
     },
     {
       "name": "البلوكتشين",
-      "url": "/blockchain"
+      "url": "categories//blockchain"
     }
   ]
 }
