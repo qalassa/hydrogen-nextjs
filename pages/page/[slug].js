@@ -68,7 +68,7 @@ export const getStaticProps = async ({ params }) => {
       title: item.fields.title,
       slug: item.fields.slug,
       publishedDate: item.fields.publishedDate,
-      category: item.fields.category,
+      category: item.fields.categoryName,
       content: item.fields.body,
     }));
 
