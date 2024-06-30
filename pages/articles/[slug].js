@@ -48,3 +48,4 @@ export const getStaticProps = async ({ params }) => {
     return { notFound: true };
   }
 };
+
