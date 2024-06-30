@@ -48,6 +48,11 @@ export const getStaticProps = async ({ params }) => {
       'fields.category': params.category,
     });
 
+    if (!res.items.length) {
+      console.log(`No posts found for category: ${params.category}`);
+      return { notFound: true };
+    }
+
     const posts = res.items.map((item) => ({
       title: item.fields.title,
       body: item.fields.body,
@@ -65,12 +70,8 @@ export const getStaticProps = async ({ params }) => {
       },
     };
   } catch (error) {
-    console.error('Error fetching posts for category:', error);
-    return {
-      props: {
-        posts: [],
-        slug: params.category,
-      },
-    };
+    console.error(`Error fetching posts for category ${params.category}:`, error);
+    return { props: { posts: [], slug: params.category } };
   }
 };
+
