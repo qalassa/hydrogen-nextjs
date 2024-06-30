@@ -9,7 +9,7 @@ const Category = ({ posts, slug }) => {
         <div className="container">
           <div className="row">
             <div className="mx-auto lg:col-10">
-              <h1 className="text-center capitalize">{slug}</h1>
+              <h1 className="text-center capitalize">{decodeURIComponent(slug)}</h1>
               <div className="row pt-12">
                 {posts.map((post, i) => (
                   <Post className="mb-6 sm:col-6" key={`key-${i}`} post={post} />
@@ -46,36 +46,38 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps = async ({ params }) => {
   try {
+    const categoryName = decodeURIComponent(params.category);
+
     const res = await client.getEntries({
       content_type: 'article',
-      'fields.categoryName': params.category,
+      'fields.categoryName': categoryName,
     });
 
     if (!res.items.length) {
-      console.log(`No posts found for category: ${params.category}`);
+      console.log(`No posts found for category: ${categoryName}`);
       return { notFound: true };
     }
 
     const posts = res.items.map((item) => ({
       title: item.fields.title,
-      body: item.fields.body,
+      body: item.fields.details || {},
       slug: item.fields.slug,
-      publishedDate: item.fields.publishedDate,
+      publishedDate: item.fields.date,
       category: item.fields.categoryName,
     }));
 
     const sortedPosts = posts.sort((a, b) => new Date(b.publishedDate) - new Date(a.publishedDate));
 
-    console.log(`Fetched posts for category ${params.category}:`, sortedPosts);
+    console.log(`Fetched posts for category ${categoryName}:`, sortedPosts);
 
     return {
       props: {
         posts: JSON.parse(JSON.stringify(sortedPosts)),
-        slug: params.category,
+        slug: categoryName,
       },
     };
   } catch (error) {
-    console.error(`Error fetching posts for category ${params.category}:`, error);
-    return { props: { posts: [], slug: params.category } };
+    console.error(`Error fetching posts for category ${categoryName}:`, error);
+    return { props: { posts: [], slug: categoryName } };
   }
 };
