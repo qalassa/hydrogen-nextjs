@@ -45,7 +45,7 @@ export const getStaticProps = async ({ params }) => {
   try {
     const res = await client.getEntries({
       content_type: 'article',
-      'fields.categories[in]': decodeURIComponent(params.category),
+      'fields.categoryName[in]': decodeURIComponent(params.category),
     });
 
     if (!res.items.length) {
@@ -58,7 +58,7 @@ export const getStaticProps = async ({ params }) => {
       body: item.fields.body,
       slug: item.fields.slug,
       publishedDate: item.fields.publishedDate,
-      categories: item.fields.categories,
+      categories: item.fields.categoryName,
     }));
 
     const sortedPosts = posts.sort((a, b) => new Date(b.publishedDate) - new Date(a.publishedDate));
