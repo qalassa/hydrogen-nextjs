@@ -1,4 +1,3 @@
-// pages/categories/[category].js
 import client from '@lib/contentful';
 import Base from '@layouts/Baseof';
 import Post from '@layouts/components/Post';
@@ -17,12 +16,7 @@ const Category = ({ posts, category }) => {
               <h1 className="text-center capitalize">{category}</h1>
               <div className="row pt-12">
                 {posts.map((post, i) => (
-                  <Post
-                    className="mb-6 sm:col-6"
-                    key={`key-${i}`}
-                    post={post}
-                    href={`/categories/${category}/${post.slug}`}
-                  />
+                  <Post className="mb-6 sm:col-6" key={`key-${i}`} post={post} />
                 ))}
               </div>
             </div>
@@ -61,6 +55,7 @@ export const getStaticProps = async ({ params }) => {
 
     const posts = res.items.map((item) => ({
       title: item.fields.title,
+      body: item.fields.body,
       slug: item.fields.slug,
       publishedDate: item.fields.publishedDate,
       categories: item.fields.categories,
