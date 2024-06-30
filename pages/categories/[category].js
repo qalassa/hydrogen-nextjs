@@ -1,19 +1,20 @@
+// pages/categories/[category].js
 import client from '@lib/contentful';
 import Base from '@layouts/Baseof';
 import Post from '@layouts/components/Post';
-import { getArticle ,getAllArticles } from '../../lib/api';
 
 const Category = ({ posts, slug }) => {
   if (!posts.length) {
     return <div>No posts found for this category</div>;
   }
+
   return (
     <Base>
       <div className="section">
         <div className="container">
           <div className="row">
             <div className="mx-auto lg:col-10">
-              <h1 className="text-center capitalize">{decodeURIComponent(slug)}</h1>
+              <h1 className="text-center capitalize">{slug}</h1>
               <div className="row pt-12">
                 {posts.map((post, i) => (
                   <Post className="mb-6 sm:col-6" key={`key-${i}`} post={post} />
@@ -30,51 +31,47 @@ const Category = ({ posts, slug }) => {
 export default Category;
 
 export const getStaticPaths = async () => {
-  try {
-    const res = await client.getEntries({ content_type: 'article' });
-    const categories = res.items.map(item => item.fields.categoryName || 'uncategorized');
-    const uniqueCategories = [...new Set(categories)];
+  const res = await client.getEntries({ content_type: 'article' });
+  const categories = res.items.flatMap(item => item.fields.categories || ['uncategorized']);
+  const uniqueCategories = [...new Set(categories)];
 
-    const paths = uniqueCategories.map(category => ({
-      params: { category: encodeURIComponent(category).toLowerCase() }
-    }));
+  const paths = uniqueCategories.map(category => ({
+    params: { category: encodeURIComponent(category).toLowerCase() }
+  }));
 
-    console.log('Generated paths for categories:', paths);
-
-    return { paths, fallback: 'blocking' };
-  } catch (error) {
-    console.error('Error generating paths for categories:', error);
-    return { paths: [], fallback: false };
-  }
+  return { paths, fallback: 'blocking' };
 };
 
 export const getStaticProps = async ({ params }) => {
   try {
-    const categoryName = decodeURIComponent(params.category);
-    const articles = await client.getEntries({
+    const res = await client.getEntries({
       content_type: 'article',
-      'fields.categoryName': categoryName,
+      'fields.categories[in]': decodeURIComponent(params.category),
     });
-    if (!articles.items.length) {
+
+    if (!res.items.length) {
+      console.log(`No posts found for category: ${params.category}`);
       return { notFound: true };
     }
-    const posts = articles.items.map((item) => ({
+
+    const posts = res.items.map((item) => ({
       title: item.fields.title,
+      body: item.fields.body,
       slug: item.fields.slug,
-      date: item.fields.date,
-      image: item.fields.articleImage?.fields?.file?.url,
-      author: item.fields.authorName,
-      categories: [item.fields.categoryName],
-      summary: item.fields.summary || '',
+      publishedDate: item.fields.publishedDate,
+      categories: item.fields.categories,
     }));
+
+    const sortedPosts = posts.sort((a, b) => new Date(b.publishedDate) - new Date(a.publishedDate));
+
     return {
       props: {
-        posts: JSON.parse(JSON.stringify(posts)),
-        category: categoryName,
+        posts: JSON.parse(JSON.stringify(sortedPosts)),
+        slug: decodeURIComponent(params.category),
       },
     };
   } catch (error) {
     console.error(`Error fetching posts for category ${params.category}:`, error);
-    return { props: { posts: [], category: params.category } };
+    return { props: { posts: [], slug: decodeURIComponent(params.category) } };
   }
 };
