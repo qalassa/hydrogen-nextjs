@@ -1,7 +1,7 @@
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import client from '@lib/contentful';
 import PostSingle from '@layouts/PostSingle';
-
+// unpublish from contentful
 const Article = ({ post, content, slug, posts }) => {
   return (
     <PostSingle content={content} slug={slug} post={post} posts={posts} />
