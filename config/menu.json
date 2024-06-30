@@ -1,10 +1,32 @@
 {
   "main": [
-    { "name": "كل المنشورات", "url": "/", "type": "main" },
-    { "name": "المنطق", "url": "/categories/logic", "type": "main" },
-    { "name": "علم التحسيب النظري", "url": "/categories/assistant", "type": "main" },
-    { "name": "البلوكتشين", "url": "/categories/github", "type": "main" },
-    { "name": "الفلسفة", "url": "/categories/technology", "type": "main" },
-    { "name": "تواصل", "url": "/contact", "type": "main" }
+    {
+      "name": "كل المنشورات",
+      "url": "/"
+    },
+    {
+      "name": "المنطق",
+      "url": "/logic"
+    },
+    {
+      "name": "علم التحسيب",
+      "url": "/cs"
+    },
+    {
+      "name": "علم التحسيب النظري"
+      "url": "/theoreticalcs"
+    },
+    {
+      "name": "البرمجة"
+      "url": "/programming"
+    },
+    {
+      "name": "الفلسفة"
+      "url": "/philosophy"
+    },
+    {
+      "name": "البلوكتشين"
+      "url": "/blockchain"
+    },
   ]
 }
