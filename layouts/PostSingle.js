@@ -12,25 +12,14 @@ import Base from "./Baseof";
 import Post from "./components/Post";
 
 const PostSingle = ({ post, mdxContent, slug, posts }) => {
-  if (!post || post.length === 0) {
-    return <div>No post data available.</div>;
+  if (!post || !post.length) {
+    return <div>Article not found</div>;
   }
 
   const { frontmatter, content } = post[0];
-  if (!frontmatter) {
-    return <div>Post has no frontmatter.</div>;
-  }
-
   let { description, title, date, image, categories } = frontmatter;
-  description = description || (content ? content.slice(0, 120) : 'No description available');
-  
-  if (!posts) {
-    console.error("Posts data is missing.");
-    posts = []; // Set to empty array to prevent further errors
-  }
-
+  description = description ? description : content.slice(0, 120);
   const similarPosts = similerItems(post, posts, slug);
-
 
   return (
     <Base title={title} description={description}>
@@ -39,7 +28,7 @@ const PostSingle = ({ post, mdxContent, slug, posts }) => {
           <div className="row">
             <div className="mx-auto lg:col-10">
               <Link
-                className="mb-12 inline-flex items-center text-primary hover:underline"
+                className="mb-12  inline-flex items-center text-primary hover:underline"
                 href="/"
               >
                 <svg
@@ -72,9 +61,12 @@ const PostSingle = ({ post, mdxContent, slug, posts }) => {
                 <ul className="mt-4 mb-8 text-text">
                   <li className="mb-2 mr-4 inline-block">
                     <ul>
-                      {categories && categories.map((category, i) => (
+                      {categories.map((category, i) => (
                         <li className="inline-block" key={`category-${i}`}>
-                          <Link href={`/categories/${slugify(category)}`} className="mr-3 text-primary">
+                          <Link
+                            href={`/categories/${slugify(category)}`}
+                            className="mr-3 text-primary"
+                          >
                             {humanize(category)}
                           </Link>
                         </li>
@@ -89,7 +81,7 @@ const PostSingle = ({ post, mdxContent, slug, posts }) => {
                     |
                   </li>
                   <li className="mb-2 mr-4 inline-block">
-                    {content && readingTime(content)}
+                    {readingTime(content)}
                   </li>
                 </ul>
                 <div className="content text-left">
