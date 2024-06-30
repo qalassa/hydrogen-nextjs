@@ -1,12 +1,7 @@
-import config from "@config/config.json";
-import Base from "@layouts/Baseof";
-import Post from "@layouts/components/Post";
-import { getSinglePage } from "@lib/contentParser";
-import { getTaxonomy } from "@lib/taxonomyParser";
-import { sortByDate } from "@lib/utils/sortFunctions";
-import { slugify } from "@lib/utils/textConverter";
-
-const { blog_folder } = config.settings;
+import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
+import client from '@lib/contentful';
+import Base from '@layouts/Baseof';
+import Post from '@layouts/components/Post';
 
 const Category = ({ posts, slug }) => {
   return (
@@ -18,11 +13,7 @@ const Category = ({ posts, slug }) => {
               <h1 className="text-center capitalize">{slug}</h1>
               <div className="row pt-12">
                 {posts.map((post, i) => (
-                  <Post
-                    className="mb-6 sm:col-6"
-                    key={"key-" + i}
-                    post={post}
-                  />
+                  <Post className="mb-6 sm:col-6" key={`key-${i}`} post={post} />
                 ))}
               </div>
             </div>
@@ -35,12 +26,16 @@ const Category = ({ posts, slug }) => {
 
 export default Category;
 
-export const getStaticPaths = () => {
-  const allCategory = getTaxonomy(`content/${blog_folder}`, "categories");
-  const paths = allCategory.map((category) => ({
-    params: {
-      category: category,
-    },
+export const getStaticPaths = async () => {
+  // Fetch all categories from Contentful
+  const res = await client.getEntries({ content_type: 'article' });
+  const allCategories = res.items.map((item) => item.fields.category);
+
+  // Remove duplicates
+  const uniqueCategories = [...new Set(allCategories)];
+
+  const paths = uniqueCategories.map((category) => ({
+    params: { category: category },
   }));
 
   return {
@@ -49,20 +44,38 @@ export const getStaticPaths = () => {
   };
 };
 
-export const getStaticProps = ({ params }) => {
-  const posts = getSinglePage(`content/${blog_folder}`);
-  const filteredPosts = posts.filter((post) =>
-    post.frontmatter.categories.find((category) =>
-      slugify(category).includes(params.category)
-    )
-  );
+export const getStaticProps = async ({ params }) => {
+  try {
+    // Fetch posts for the given category from Contentful
+    const res = await client.getEntries({
+      content_type: 'article',
+      'fields.category': params.category,
+    });
 
-  const sortedPosts = sortByDate(filteredPosts);
+    const posts = res.items.map((item) => ({
+      title: item.fields.title,
+      body: item.fields.body,
+      slug: item.fields.slug,
+      publishedDate: item.fields.publishedDate,
+      category: item.fields.category,
+    }));
 
-  return {
-    props: {
-      posts: filteredPosts,
-      slug: params.category,
-    },
-  };
+    // Sort posts by date (assuming you have a sort function)
+    const sortedPosts = posts.sort((a, b) => new Date(b.publishedDate) - new Date(a.publishedDate));
+
+    return {
+      props: {
+        posts: sortedPosts,
+        slug: params.category,
+      },
+    };
+  } catch (error) {
+    console.error('Error fetching posts for category:', error);
+    return {
+      props: {
+        posts: [],
+        slug: params.category,
+      },
+    };
+  }
 };
