@@ -49,10 +49,7 @@ export const getStaticPaths = async () => {
     });
   }
 
-  return {
-    paths,
-    fallback: false,
-  };
+  return { paths, fallback: 'blocking' };
 };
 
 // get blog pagination content
