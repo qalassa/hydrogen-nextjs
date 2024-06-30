@@ -7,7 +7,7 @@ import Post from "@layouts/components/Post";
 import Social from "@layouts/components/Social";
 import { sortByDate } from "@lib/utils/sortFunctions";
 import { markdownify } from "@lib/utils/textConverter";
-import { getAllArticles } from '../lib/api';
+import { getArticles ,getAllArticles } from '../lib/api';
 
 const { blog_folder } = config.settings;
 
