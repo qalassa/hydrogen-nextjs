@@ -75,21 +75,19 @@ const Home = ({ posts }) => {
 export default Home;
 
 export const getStaticProps = async () => {
-  // Fetch posts from Contentful
-  const posts = await getAllArticles();
-
+  const articles = await getAllArticles();
   return {
     props: {
-      posts: posts.map(post => ({
-        title: post.title,
-        slug: post.slug,
-        summary: post.summary,
-        categoryName: post.categoryName,
-        authorName: post.authorName,
-        articleImage: post.articleImage,
-        date: post.date,
+      posts: articles.map(article => ({
+        title: article.title,
+        slug: article.slug,
+        date: article.date,
+        image: article.articleImage?.url,
+        author: article.authorName,
+        categories: [article.categoryName],
+        summary: article.summary || '',
       })),
     },
-    revalidate: 1, // Revalidate every 1 second
+    revalidate: 1,
   };
 };
