@@ -47,12 +47,16 @@ export default PostSingle;
 
 export const getStaticPaths = async () => {
   const res = await client.getEntries({ content_type: 'article' });
-  const paths = res.items.map(item => {
-    const category = item.fields.categories[0];
-    return {
-      params: { category: encodeURIComponent(category).toLowerCase(), slug: item.fields.slug }
-    };
-  });
+
+  // Ensure each item has categories and the categories array is not empty
+  const paths = res.items
+    .filter(item => item.fields.categories && item.fields.categories.length > 0)
+    .map(item => {
+      const category = item.fields.categories[0];
+      return {
+        params: { category: encodeURIComponent(category).toLowerCase(), slug: item.fields.slug }
+      };
+    });
 
   return { paths, fallback: 'blocking' };
 };
