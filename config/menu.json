@@ -13,19 +13,19 @@
       "url": "/cs"
     },
     {
-      "name": "علم التحسيب النظري"
+      "name": "علم التحسيب النظري",
       "url": "/theoreticalcs"
     },
     {
-      "name": "البرمجة"
+      "name": "البرمجة",
       "url": "/programming"
     },
     {
-      "name": "الفلسفة"
+      "name": "الفلسفة",
       "url": "/philosophy"
     },
     {
-      "name": "البلوكتشين"
+      "name": "البلوكتشين",
       "url": "/blockchain"
     }
   ]
