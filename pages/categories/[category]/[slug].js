@@ -55,8 +55,6 @@ export const getStaticPaths = async () => {
       };
     });
 
-  console.log("Generated Paths:", paths); // Log the paths for debugging
-
   return { paths, fallback: 'blocking' };
 };
 
@@ -77,13 +75,14 @@ export const getStaticProps = async ({ params }) => {
     const post = res.items[0];
     const content = post.fields.body;
 
-    console.log("Fetched Post:", post); // Log the fetched post for debugging
+    // Ensure content is properly serialized
+    const serializedContent = content ? JSON.parse(JSON.stringify(content)) : null;
 
     return {
       props: {
         post: {
           frontmatter: post.fields,
-          content: post.fields.body, // assuming this contains the MDX content
+          content: serializedContent,
         },
       },
     };
