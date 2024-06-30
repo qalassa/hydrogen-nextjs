@@ -87,6 +87,7 @@ export const getStaticProps = async () => {
         categoryName: post.categoryName,
         authorName: post.authorName,
         articleImage: post.articleImage,
+        date: post.date,
       })),
     },
     revalidate: 1, // Revalidate every 1 second
