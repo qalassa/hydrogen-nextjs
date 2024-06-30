@@ -24,30 +24,29 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps = async ({ params }) => {
   const { slug } = params;
+  try {
+    const postRes = await client.getEntries({
+      content_type: 'article',
+      'fields.slug': slug,
+    });
 
-  const allPosts = await client.getEntries({ content_type: 'article' });
-  const postRes = await client.getEntries({
-    content_type: 'article',
-    'fields.slug': slug,
-  });
+    if (!postRes.items.length) {
+      console.log(`No post found for slug: ${slug}`);
+      return { notFound: true };
+    }
 
-  const post = postRes.items[0];
-  const content = post ? post.fields.body : '';
+    const post = postRes.items[0];
+    const content = post.fields.body;
 
-  const posts = allPosts.items.map((item) => ({
-    title: item.fields.title,
-    slug: item.fields.slug,
-    publishedDate: item.fields.publishedDate,
-    category: item.fields.category,
-    content: item.fields.body,
-  }));
-
-  return {
-    props: {
-      post: post ? JSON.parse(JSON.stringify(post.fields)) : null,
-      content: JSON.parse(JSON.stringify(content)),
-      slug,
-      posts: JSON.parse(JSON.stringify(posts)),
-    },
-  };
+    return {
+      props: {
+        post: JSON.parse(JSON.stringify(post.fields)),
+        content: JSON.parse(JSON.stringify(content)),
+        slug,
+      },
+    };
+  } catch (error) {
+    console.error(`Error fetching post for slug ${slug}:`, error);
+    return { notFound: true };
+  }
 };
