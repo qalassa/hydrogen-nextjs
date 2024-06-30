@@ -13,7 +13,7 @@ const RegularPages = ({ data }) => {
   return (
     <Base
       title={title}
-      description = description ? description : (typeof content === 'string' ? content.slice(0, 120) : '');
+      description={description ? description : (typeof content === 'string' ? content.slice(0, 120) : '')}
       meta_title={meta_title}
       image={image}
       noindex={noindex}
