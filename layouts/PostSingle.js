@@ -13,10 +13,24 @@ import Post from "./components/Post";
 // why not updating the deployment?
 const PostSingle = ({ post, mdxContent, slug, posts }) => {
   if (!post || post.length === 0) {
+    console.error('No post data available');
     return <div>No post data available.</div>;
-}
-const { frontmatter, content } = post[0];
+  }
+
+  const { frontmatter, content } = post[0];
+
+  if (!frontmatter) {
+    console.error('No frontmatter available');
+    return <div>No frontmatter available.</div>;
+  }
+
   let { description, title, date, image, categories } = frontmatter;
+
+  if (!categories) {
+    console.error('No categories available');
+    categories = []; // Default to an empty array if categories are not available
+  }
+
   description = description ? description : content.slice(0, 120);
   const similarPosts = similerItems(post, posts, slug);
 
