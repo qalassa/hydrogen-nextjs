@@ -1,7 +1,7 @@
 {
   "main": [
     { "name": "كل المنشورات", "url": "/", "type": "main" },
-    { "name": "المنطق", "url": "/categories/programming", "type": "main" },
+    { "name": "المنطق", "url": "/categories/logic", "type": "main" },
     { "name": "علم التحسيب النظري", "url": "/categories/assistant", "type": "main" },
     { "name": "البلوكتشين", "url": "/categories/github", "type": "main" },
     { "name": "الفلسفة", "url": "/categories/technology", "type": "main" },
