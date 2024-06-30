@@ -1,4 +1,4 @@
-import { getArticle } from '@/lib/api';
+import { getArticle } from "../../lib/api.js";
 import PostSingle from '@layouts/PostSingle';
 
 const Article = ({ post, content, slug, posts }) => {
