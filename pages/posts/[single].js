@@ -1,22 +1,22 @@
-import config from "@config/config.json";
-import PostSingle from "@layouts/PostSingle";
-import { getSinglePage } from "@lib/contentParser";
-import { parseMDX } from "@lib/utils/mdxParser";
-const { blog_folder } = config.settings;
+import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
+import client from '@lib/contentful';
+import PostSingle from '@layouts/PostSingle';
 
-// post single layout
 const Article = ({ post, mdxContent, slug, posts }) => {
   return (
     <PostSingle mdxContent={mdxContent} slug={slug} post={post} posts={posts} />
   );
 };
 
+export default Article;
+
 // get post single slug
-export const getStaticPaths = () => {
-  const allSlug = getSinglePage(`content/${blog_folder}`);
-  const paths = allSlug.map((item) => ({
+export const getStaticPaths = async () => {
+  // Fetch all articles from Contentful
+  const res = await client.getEntries({ content_type: 'article' });
+  const paths = res.items.map((item) => ({
     params: {
-      single: item.slug,
+      single: item.fields.slug,
     },
   }));
 
@@ -29,18 +29,36 @@ export const getStaticPaths = () => {
 // get post single content
 export const getStaticProps = async ({ params }) => {
   const { single } = params;
-  const posts = getSinglePage(`content/${blog_folder}`);
-  const post = posts?.filter((p) => p.slug == single);
-  const mdxContent = await parseMDX(post[0].content);
+
+  // Fetch all posts
+  const allPosts = await client.getEntries({ content_type: 'article' });
+
+  // Fetch the specific post by slug
+  const postRes = await client.getEntries({
+    content_type: 'article',
+    'fields.slug': single,
+  });
+
+  const post = postRes.items[0];
+
+  // Convert rich text to React components
+  const mdxContent = post ? documentToReactComponents(post.fields.body) : null;
+
+  // Map all posts to the required format
+  const posts = allPosts.items.map((item) => ({
+    title: item.fields.title,
+    slug: item.fields.slug,
+    publishedDate: item.fields.publishedDate,
+    category: item.fields.category,
+    content: item.fields.body,
+  }));
 
   return {
     props: {
-      post: post,
+      post: post.fields,
       mdxContent: mdxContent,
       slug: single,
       posts: posts,
     },
   };
 };
-
-export default Article;
