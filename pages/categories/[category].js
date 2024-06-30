@@ -50,4 +50,27 @@ export const getStaticProps = async ({ params }) => {
 
     const posts = res.items.map((item) => ({
       title: item.fields.title,
-      body: item.fields
+      body: item.fields.body,
+      slug: item.fields.slug,
+      publishedDate: item.fields.publishedDate,
+      category: item.fields.category,
+    }));
+
+    const sortedPosts = posts.sort((a, b) => new Date(b.publishedDate) - new Date(a.publishedDate));
+
+    return {
+      props: {
+        posts: JSON.parse(JSON.stringify(sortedPosts)),
+        slug: params.category,
+      },
+    };
+  } catch (error) {
+    console.error('Error fetching posts for category:', error);
+    return {
+      props: {
+        posts: [],
+        slug: params.category,
+      },
+    };
+  }
+};
