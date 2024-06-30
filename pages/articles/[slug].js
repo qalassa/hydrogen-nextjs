@@ -1,6 +1,7 @@
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import client from '@lib/contentful';
 import PostSingle from '@layouts/PostSingle';
+import { getArticles ,getAllArticles } from '../lib/api';
 
 const Article = ({ post, content, slug, posts }) => {
   if (!post) {
