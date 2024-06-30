@@ -20,27 +20,29 @@ export const getStaticPaths = async () => {
 };
 
 export const getStaticProps = async ({ params }) => {
-  const { single } = params;
+  const { slug } = params;
   try {
-    const postRes = await getArticle(single);
-
-    if (!postRes || !postRes.details) {
-      console.log(`No post or post details found for slug: ${single}`);
+    const post = await getArticle(slug);
+    if (!post) {
       return { notFound: true };
     }
-
-    const post = postRes;
-    const content = post.details.json;
-
     return {
       props: {
-        post,
-        content,
-        slug: single,
+        post: {
+          frontmatter: {
+            title: post.title,
+            date: post.date,
+            image: post.articleImage?.url,
+            categories: [post.categoryName],
+            author: post.authorName,
+          },
+          content: post.details?.json,
+        },
+        slug,
       },
     };
   } catch (error) {
-    console.error(`Error fetching single post ${single}:`, error);
+    console.error(`Error fetching post for slug ${slug}:`, error);
     return { notFound: true };
   }
 };
