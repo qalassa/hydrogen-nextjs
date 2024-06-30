@@ -47,31 +47,37 @@ export const getStaticPaths = async () => {
   const res = await client.getEntries({ content_type: 'article' });
 
   const paths = res.items
-    .filter(item => item.fields.categories && item.fields.categories.length > 0)
+    .filter(item => item.fields.categoryName && item.fields.slug)
     .map(item => {
-      const category = item.fields.categories[0];
+      const category = item.fields.categoryName;
       return {
         params: { category: encodeURIComponent(category).toLowerCase(), slug: item.fields.slug }
       };
     });
 
+  console.log("Generated Paths:", paths); // Log the paths for debugging
+
   return { paths, fallback: 'blocking' };
 };
 
 export const getStaticProps = async ({ params }) => {
+  const { category, slug } = params;
   try {
     const res = await client.getEntries({
       content_type: 'article',
-      'fields.slug': params.slug,
-      'fields.categories[in]': decodeURIComponent(params.category),
+      'fields.slug': slug,
+      'fields.categoryName': decodeURIComponent(category),
     });
 
     if (!res.items.length) {
-      console.log(`No posts found for category: ${params.category}`);
+      console.log(`No post found for slug: ${slug} in category: ${category}`);
       return { notFound: true };
     }
 
     const post = res.items[0];
+    const content = post.fields.body;
+
+    console.log("Fetched Post:", post); // Log the fetched post for debugging
 
     return {
       props: {
@@ -82,7 +88,7 @@ export const getStaticProps = async ({ params }) => {
       },
     };
   } catch (error) {
-    console.error(`Error fetching post for category ${params.category} and slug ${params.slug}:`, error);
-    return { props: { post: null } };
+    console.error(`Error fetching post for category ${category} and slug ${slug}:`, error);
+    return { notFound: true };
   }
 };
