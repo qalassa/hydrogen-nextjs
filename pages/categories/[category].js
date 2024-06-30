@@ -1,4 +1,3 @@
-import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import client from '@lib/contentful';
 import Base from '@layouts/Baseof';
 import Post from '@layouts/components/Post';
@@ -31,8 +30,8 @@ export const getStaticPaths = async () => {
   const res = await client.getEntries({ content_type: 'article' });
   const allCategories = res.items.map((item) => item.fields.category);
 
-  // Remove duplicates
-  const uniqueCategories = [...new Set(allCategories)];
+  // Remove duplicates and filter out undefined categories
+  const uniqueCategories = [...new Set(allCategories)].filter(Boolean);
 
   const paths = uniqueCategories.map((category) => ({
     params: { category: category },
@@ -63,9 +62,10 @@ export const getStaticProps = async ({ params }) => {
     // Sort posts by date (assuming you have a sort function)
     const sortedPosts = posts.sort((a, b) => new Date(b.publishedDate) - new Date(a.publishedDate));
 
+    // Ensure all props are serializable
     return {
       props: {
-        posts: sortedPosts,
+        posts: JSON.parse(JSON.stringify(sortedPosts)),
         slug: params.category,
       },
     };
