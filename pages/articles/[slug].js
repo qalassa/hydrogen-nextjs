@@ -2,9 +2,9 @@ import { documentToReactComponents } from '@contentful/rich-text-react-renderer'
 import client from '@lib/contentful';
 import PostSingle from '@layouts/PostSingle';
 
-const Article = ({ post, mdxContent, slug, posts }) => {
+const Article = ({ post, content, slug, posts }) => {
   return (
-    <PostSingle mdxContent={mdxContent} slug={slug} post={post} posts={posts} />
+    <PostSingle content={content} slug={slug} post={post} posts={posts} />
   );
 };
 
@@ -32,9 +32,7 @@ export const getStaticProps = async ({ params }) => {
   });
 
   const post = postRes.items[0];
-
-  // Convert rich text to a JSON object for serialization
-  const mdxContent = post ? JSON.parse(JSON.stringify(post.fields.body)) : '';
+  const content = post ? post.fields.body : '';
 
   const posts = allPosts.items.map((item) => ({
     title: item.fields.title,
@@ -47,7 +45,7 @@ export const getStaticProps = async ({ params }) => {
   return {
     props: {
       post: post ? JSON.parse(JSON.stringify(post.fields)) : null,
-      mdxContent,
+      content: JSON.parse(JSON.stringify(content)),
       slug,
       posts: JSON.parse(JSON.stringify(posts)),
     },
