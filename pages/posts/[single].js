@@ -1,6 +1,7 @@
 import { getArticle } from '../../lib/api';
 import PostSingle from '@layouts/PostSingle';
 import client from '@lib/contentful';
+import { getArticles ,getAllArticles } from '../lib/api';
 
 const Article = ({ post, content, slug, posts }) => {
   return (
