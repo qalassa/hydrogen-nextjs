@@ -28,23 +28,22 @@ export const getStaticPaths = async () => {
 export const getStaticProps = async ({ params }) => {
   const { slug } = params;
   try {
-    const postRes = await client.getEntries({
-      content_type: 'article',
-      'fields.slug': slug,
-    });
-
-    if (!postRes.items.length) {
-      console.log(`No post found for slug: ${slug}`);
+    const post = await getArticle(slug);
+    if (!post) {
       return { notFound: true };
     }
-
-    const post = postRes.items[0].fields;
-    const content = post.details || {};
-
     return {
       props: {
-        post: post,
-        content: content,
+        post: {
+          frontmatter: {
+            title: post.title,
+            date: post.date,
+            image: post.articleImage?.url,
+            categories: [post.categoryName],
+            author: post.authorName,
+          },
+          content: post.details?.json,
+        },
         slug,
       },
     };
