@@ -40,7 +40,7 @@ export const getStaticPaths = async () => {
     },
   }));
 
-  return { paths, fallback: false };
+  return { paths, fallback: 'blocking' };
 };
 
 // for regular page data
