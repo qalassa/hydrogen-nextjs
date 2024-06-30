@@ -1,46 +1,50 @@
-// pages/articles/[slug].js
-import { useRouter } from 'next/router';
-import client from '../../contentful';
+import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
+import client from '@lib/contentful';
 
 const Article = ({ article }) => {
-  const router = useRouter();
-
-  if (!router.isFallback && !article) {
-    return <div>مقال غير موجود</div>;
+  if (!article || !article.fields) {
+    return <div>Article not found</div>;
   }
+
+  const { title, body } = article.fields;
 
   return (
     <div>
-      <h1>{article.fields.title}</h1>
-      <div dangerouslySetInnerHTML={{ __html: article.fields.body }} />
+      <h1>{title}</h1>
+      <div>{documentToReactComponents(body)}</div>
     </div>
   );
 };
 
+export default Article;
+
 export async function getStaticPaths() {
   const res = await client.getEntries({ content_type: 'article' });
-  const paths = res.items.map(item => ({
+  const paths = res.items.map((item) => ({
     params: { slug: item.fields.slug },
   }));
 
   return {
     paths,
-    fallback: true,
+    fallback: false,
   };
 }
 
 export async function getStaticProps({ params }) {
-  const res = await client.getEntries({
+  const { items } = await client.getEntries({
     content_type: 'article',
     'fields.slug': params.slug,
   });
 
+  if (!items.length) {
+    return {
+      notFound: true,
+    };
+  }
+
   return {
     props: {
-      article: res.items[0] || null,
+      article: items[0],
     },
-    revalidate: 1,
   };
 }
-
-export default Article;
