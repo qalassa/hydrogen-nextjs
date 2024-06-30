@@ -1,7 +1,7 @@
 import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
 import client from '@lib/contentful';
 import PostSingle from '@layouts/PostSingle';
-// unpublish from contentful
+
 const Article = ({ post, content, slug, posts }) => {
   return (
     <PostSingle content={content} slug={slug} post={post} posts={posts} />
@@ -19,7 +19,6 @@ export const getStaticPaths = async () => {
   return { paths, fallback: 'blocking' };
 };
 
-
 export const getStaticProps = async ({ params }) => {
   const { slug } = params;
   try {
@@ -34,11 +33,12 @@ export const getStaticProps = async ({ params }) => {
     }
 
     const post = postRes.items[0];
-    const content = post.fields.body;
+    const content = post.fields.details || {};
+    const postFields = post.fields || {};
 
     return {
       props: {
-        post: JSON.parse(JSON.stringify(post.fields)),
+        post: JSON.parse(JSON.stringify(postFields)),
         content: JSON.parse(JSON.stringify(content)),
         slug,
       },
@@ -48,4 +48,3 @@ export const getStaticProps = async ({ params }) => {
     return { notFound: true };
   }
 };
-
