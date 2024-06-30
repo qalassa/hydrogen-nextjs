@@ -55,22 +55,33 @@ export const getStaticPaths = async () => {
 
 // get blog pagination content
 export const getStaticProps = async ({ params }) => {
-  const currentPage = parseInt((params && params.slug) || '1');
+  const currentPage = parseInt(params.slug || '1');
+  try {
+    const res = await client.getEntries({ content_type: 'article' });
 
-  const res = await client.getEntries({ content_type: 'article' });
-  const posts = res.items.map((item) => ({
-    title: item.fields.title,
-    slug: item.fields.slug,
-    publishedDate: item.fields.publishedDate,
-    category: item.fields.category,
-    content: item.fields.body,
-  }));
+    if (!res.items.length) {
+      console.log('No posts available for pagination.');
+      return { notFound: true };
+    }
 
-  return {
-    props: {
-      pagination,
-      posts: JSON.parse(JSON.stringify(posts)), // Ensure serializability
-      currentPage,
-    },
-  };
+    const posts = res.items.map((item) => ({
+      title: item.fields.title,
+      slug: item.fields.slug,
+      publishedDate: item.fields.publishedDate,
+      category: item.fields.category,
+      content: item.fields.body,
+    }));
+
+    return {
+      props: {
+        pagination,
+        posts: JSON.parse(JSON.stringify(posts)),
+        currentPage,
+      },
+    };
+  } catch (error) {
+    console.error('Error fetching posts for pagination:', error);
+    return { props: { posts: [], currentPage } };
+  }
 };
+
