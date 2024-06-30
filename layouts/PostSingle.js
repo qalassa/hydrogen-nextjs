@@ -11,7 +11,10 @@ import Link from "next/link";
 import Base from "./Baseof";
 import Post from "./components/Post";
 const PostSingle = ({ post, mdxContent, slug, posts }) => {
-  const { frontmatter, content } = post[0];
+  if (!post || post.length === 0) {
+    return <div>No post data available.</div>;
+}
+const { frontmatter, content } = post[0];
   let { description, title, date, image, categories } = frontmatter;
   description = description ? description : content.slice(0, 120);
   const similarPosts = similerItems(post, posts, slug);
@@ -56,16 +59,13 @@ const PostSingle = ({ post, mdxContent, slug, posts }) => {
                 <ul className="mt-4 mb-8 text-text">
                   <li className="mb-2 mr-4 inline-block">
                     <ul>
-                      {categories.map((category, i) => (
-                        <li className="inline-block" key={`category-${i}`}>
-                          <Link
-                            href={`/categories/${slugify(category)}`}
-                            className="mr-3 text-primary"
-                          >
-                            {humanize(category)}
-                          </Link>
-                        </li>
-                      ))}
+                      {frontmatter.categories && frontmatter.categories.map((category, i) => (
+    <li className="inline-block" key={`category-${i}`}>
+        <Link href={`/categories/${slugify(category)}`} className="mr-3 text-primary">
+            {humanize(category)}
+        </Link>
+    </li>
+))}
                       |
                     </ul>
                   </li>
