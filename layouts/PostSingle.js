@@ -17,16 +17,16 @@ const PostSingle = ({ post, mdxContent, slug, posts }) => {
     return <div>No post data available.</div>;
   }
 
+  // Ensure frontmatter is also checked for existence
   const { frontmatter, content, summary } = post;
-
   if (!frontmatter) {
     console.error('No frontmatter available');
     return <div>No frontmatter available.</div>;
   }
 
   const { title, date, image, author, categories } = frontmatter;
-  const description = summary || (typeof content === 'string' ? content.slice(0, 120) : '');
-  const similarPosts = similerItems(post, posts, slug);
+  const description = summary || (content ? content.slice(0, 120) : '');
+  const similarPosts = similerItems(post, posts, slug); // Make sure this function can handle undefined post value
 
   return (
     <Base title={title} description={description}>
