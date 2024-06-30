@@ -27,19 +27,16 @@ export default Category;
 
 export const getStaticPaths = async () => {
   const res = await client.getEntries({ content_type: 'article' });
-  const allCategories = res.items.map((item) => item.fields.category);
+  const categories = res.items.map(item => item.fields.category || 'uncategorized');
+  const uniqueCategories = [...new Set(categories)];
 
-  const uniqueCategories = [...new Set(allCategories)].filter(Boolean);
-
-  const paths = uniqueCategories.map((category) => ({
-    params: { category: category.toString() },
+  const paths = uniqueCategories.map(category => ({
+    params: { category: encodeURIComponent(category).toLowerCase() }
   }));
 
-  return {
-    paths,
-    fallback: false,
-  };
+  return { paths, fallback: 'blocking' };
 };
+
 
 export const getStaticProps = async ({ params }) => {
   try {
