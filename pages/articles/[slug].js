@@ -18,17 +18,23 @@ const Article = ({ article }) => {
 
 export default Article;
 
-export async function getStaticPaths() {
-  const res = await client.getEntries({ content_type: 'article' });
+export const getStaticPaths = async () => {
+  const res = await client.getEntries({
+    content_type: 'category'  // Assuming 'category' is your content type for categories
+  });
+
   const paths = res.items.map((item) => ({
-    params: { slug: item.fields.slug },
+    params: {
+      category: item.fields.slug,  // Assuming you use slugs for categories
+    },
   }));
 
   return {
     paths,
     fallback: false,
   };
-}
+};
+
 
 export async function getStaticProps({ params }) {
   const { items } = await client.getEntries({
