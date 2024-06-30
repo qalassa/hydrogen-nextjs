@@ -22,27 +22,28 @@ export const getStaticPaths = async () => {
 export const getStaticProps = async ({ params }) => {
   const { slug } = params;
   try {
-    const post = await getArticle(slug);
-    if (!post) {
+    const article = await getArticle(slug);
+    if (!article) {
       return { notFound: true };
     }
     return {
       props: {
         post: {
           frontmatter: {
-            title: post.title,
-            date: post.date,
-            image: post.articleImage?.url,
-            categories: [post.categoryName],
-            author: post.authorName,
+            title: article.title,
+            date: article.date,
+            image: article.articleImage?.url,
+            author: article.authorName,
+            categories: [article.categoryName],
           },
-          content: post.details?.json,
+          content: article.details?.json,
+          slug: article.slug,
+          summary: article.summary || '',
         },
-        slug,
       },
     };
   } catch (error) {
-    console.error(`Error fetching post for slug ${slug}:`, error);
+    console.error(`Error fetching article for slug ${slug}:`, error);
     return { notFound: true };
   }
 };
