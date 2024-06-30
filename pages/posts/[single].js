@@ -1,4 +1,4 @@
-import { getArticle } from '@/lib/api';
+import { getArticle } from '../../lib/api';
 import PostSingle from '@layouts/PostSingle';
 import client from '../lib/contentful';
 
