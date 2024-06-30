@@ -10,6 +10,7 @@ import Image from "next/image";
 import Link from "next/link";
 import Base from "./Baseof";
 import Post from "./components/Post";
+// why not updating the deployment?
 const PostSingle = ({ post, mdxContent, slug, posts }) => {
   if (!post || post.length === 0) {
     return <div>No post data available.</div>;
