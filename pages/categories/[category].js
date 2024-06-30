@@ -1,7 +1,7 @@
 import client from '@lib/contentful';
 import Base from '@layouts/Baseof';
 import Post from '@layouts/components/Post';
-import { getArticles ,getAllArticles } from '../../lib/api';
+import { getArticle ,getAllArticles } from '../../lib/api';
 
 const Category = ({ posts, slug }) => {
   if (!posts.length) {
