@@ -3,6 +3,9 @@ import Base from '@layouts/Baseof';
 import Post from '@layouts/components/Post';
 
 const Category = ({ posts, slug }) => {
+  if (!posts.length) {
+    return <div>No posts found for this category</div>;
+  }
   return (
     <Base>
       <div className="section">
