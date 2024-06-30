@@ -1,10 +1,10 @@
-import { documentToReactComponents } from '@contentful/rich-text-react-renderer';
+import { BLOCKS, INLINES } from '@contentful/rich-text-types';
 import client from '@lib/contentful';
 import PostSingle from '@layouts/PostSingle';
 
-const Article = ({ post, mdxContent, slug, posts }) => {
+const Article = ({ post, content, slug, posts }) => {
   return (
-    <PostSingle mdxContent={mdxContent} slug={slug} post={post} posts={posts} />
+    <PostSingle content={content} slug={slug} post={post} posts={posts} />
   );
 };
 
@@ -14,9 +14,7 @@ export default Article;
 export const getStaticPaths = async () => {
   const res = await client.getEntries({ content_type: 'article' });
   const paths = res.items.map((item) => ({
-    params: {
-      single: item.fields.slug,
-    },
+    params: { single: item.fields.slug.toString() }, // Ensure slug is a string
   }));
 
   return {
@@ -29,21 +27,15 @@ export const getStaticPaths = async () => {
 export const getStaticProps = async ({ params }) => {
   const { single } = params;
 
-  // Fetch all posts
   const allPosts = await client.getEntries({ content_type: 'article' });
-
-  // Fetch the specific post by slug
   const postRes = await client.getEntries({
     content_type: 'article',
     'fields.slug': single,
   });
 
   const post = postRes.items[0];
+  const content = post ? post.fields.body : '';
 
-  // Convert rich text to React components
-  const mdxContent = post ? documentToReactComponents(post.fields.body) : null;
-
-  // Map all posts to the required format
   const posts = allPosts.items.map((item) => ({
     title: item.fields.title,
     slug: item.fields.slug,
@@ -52,12 +44,11 @@ export const getStaticProps = async ({ params }) => {
     content: item.fields.body,
   }));
 
-  // Ensure all props are serializable
   return {
     props: {
       post: post ? JSON.parse(JSON.stringify(post.fields)) : null,
-      mdxContent: mdxContent,
-      slug: single,
+      content: JSON.parse(JSON.stringify(content)),
+      slug,
       posts: JSON.parse(JSON.stringify(posts)),
     },
   };
