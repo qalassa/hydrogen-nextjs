@@ -26,11 +26,9 @@ const Category = ({ posts, slug }) => {
 export default Category;
 
 export const getStaticPaths = async () => {
-  // Fetch all categories from Contentful
   const res = await client.getEntries({ content_type: 'article' });
   const allCategories = res.items.map((item) => item.fields.category);
 
-  // Remove duplicates and filter out undefined categories
   const uniqueCategories = [...new Set(allCategories)].filter(Boolean);
 
   const paths = uniqueCategories.map((category) => ({
@@ -45,7 +43,6 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps = async ({ params }) => {
   try {
-    // Fetch posts for the given category from Contentful
     const res = await client.getEntries({
       content_type: 'article',
       'fields.category': params.category,
@@ -59,10 +56,8 @@ export const getStaticProps = async ({ params }) => {
       category: item.fields.category,
     }));
 
-    // Sort posts by date (assuming you have a sort function)
     const sortedPosts = posts.sort((a, b) => new Date(b.publishedDate) - new Date(a.publishedDate));
 
-    // Ensure all props are serializable
     return {
       props: {
         posts: JSON.parse(JSON.stringify(sortedPosts)),
