@@ -50,37 +50,30 @@ export const getStaticPaths = async () => {
 export const getStaticProps = async ({ params }) => {
   try {
     const categoryName = decodeURIComponent(params.category);
-
-    const res = await client.getEntries({
+    const articles = await client.getEntries({
       content_type: 'article',
       'fields.categoryName': categoryName,
     });
-
-    if (!res.items.length) {
-      console.log(`No posts found for category: ${categoryName}`);
+    if (!articles.items.length) {
       return { notFound: true };
     }
-
-    const posts = res.items.map((item) => ({
+    const posts = articles.items.map((item) => ({
       title: item.fields.title,
-      body: item.fields.details || {},
       slug: item.fields.slug,
-      publishedDate: item.fields.date,
-      category: item.fields.categoryName,
+      date: item.fields.date,
+      image: item.fields.articleImage?.fields?.file?.url,
+      author: item.fields.authorName,
+      categories: [item.fields.categoryName],
+      summary: item.fields.summary || '',
     }));
-
-    const sortedPosts = posts.sort((a, b) => new Date(b.publishedDate) - new Date(a.publishedDate));
-
-    console.log(`Fetched posts for category ${categoryName}:`, sortedPosts);
-
     return {
       props: {
-        posts: JSON.parse(JSON.stringify(sortedPosts)),
-        slug: categoryName,
+        posts: JSON.parse(JSON.stringify(posts)),
+        category: categoryName,
       },
     };
   } catch (error) {
-    console.error(`Error fetching posts for category ${categoryName}:`, error);
-    return { props: { posts: [], slug: categoryName } };
+    console.error(`Error fetching posts for category ${params.category}:`, error);
+    return { props: { posts: [], category: params.category } };
   }
 };
