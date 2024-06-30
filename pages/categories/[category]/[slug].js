@@ -2,6 +2,9 @@
 import client from '@lib/contentful';
 import Base from '@layouts/Baseof';
 import Post from '@layouts/components/Post';
+import { MDXRemote } from 'next-mdx-remote';
+import Image from 'next/image';
+import shortcodes from "@shortcodes/all";  // Ensure this import is correct based on your project structure
 
 const PostSingle = ({ post }) => {
   if (!post) {
