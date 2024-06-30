@@ -16,7 +16,7 @@ export const getStaticPaths = async () => {
     params: { single: item.fields.slug.toString() },
   }));
 
-  return { paths, fallback: false };
+  return { paths, fallback: 'blocking' };
 };
 
 export const getStaticProps = async ({ params }) => {
