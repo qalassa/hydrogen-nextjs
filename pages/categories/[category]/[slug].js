@@ -1,15 +1,16 @@
 import client from '@lib/contentful';
 import Base from '@layouts/Baseof';
 import { MDXRemote } from 'next-mdx-remote';
+import { serialize } from 'next-mdx-remote/serialize';
 import Image from 'next/image';
 import shortcodes from "@shortcodes/all";
 
-const PostSingle = ({ post }) => {
+const PostSingle = ({ post, content }) => {
   if (!post) {
     return <div>Article not found</div>;
   }
 
-  const { frontmatter, content } = post;
+  const { frontmatter } = post;
 
   return (
     <Base>
@@ -30,7 +31,7 @@ const PostSingle = ({ post }) => {
                   />
                 )}
                 <div className="content text-left">
-                  {content && <MDXRemote {...content} components={shortcodes} />}
+                  <MDXRemote {...content} components={shortcodes} />
                 </div>
               </article>
             </div>
@@ -75,15 +76,15 @@ export const getStaticProps = async ({ params }) => {
     const post = res.items[0];
     const content = post.fields.body;
 
-    // Ensure content is properly serialized
-    const serializedContent = content ? JSON.parse(JSON.stringify(content)) : null;
+    // Serialize the content to MDX format
+    const mdxSource = await serialize(content);
 
     return {
       props: {
         post: {
           frontmatter: post.fields,
-          content: serializedContent,
         },
+        content: mdxSource,
       },
     };
   } catch (error) {
