@@ -12,7 +12,6 @@ export default Article;
 
 // get post single slug
 export const getStaticPaths = async () => {
-  // Fetch all articles from Contentful
   const res = await client.getEntries({ content_type: 'article' });
   const paths = res.items.map((item) => ({
     params: {
@@ -53,12 +52,13 @@ export const getStaticProps = async ({ params }) => {
     content: item.fields.body,
   }));
 
+  // Ensure all props are serializable
   return {
     props: {
-      post: post.fields,
+      post: post ? JSON.parse(JSON.stringify(post.fields)) : null,
       mdxContent: mdxContent,
       slug: single,
-      posts: posts,
+      posts: JSON.parse(JSON.stringify(posts)),
     },
   };
 };
