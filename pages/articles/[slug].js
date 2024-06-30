@@ -12,15 +12,13 @@ export default Article;
 
 export const getStaticPaths = async () => {
   const res = await client.getEntries({ content_type: 'article' });
-  const paths = res.items.map((item) => ({
-    params: { slug: item.fields.slug.toString() }, // Ensure slug is a string
+  const paths = res.items.map(item => ({
+    params: { slug: item.fields.slug }
   }));
 
-  return {
-    paths,
-    fallback: false,
-  };
+  return { paths, fallback: 'blocking' };
 };
+
 
 export const getStaticProps = async ({ params }) => {
   const { slug } = params;
