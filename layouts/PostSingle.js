@@ -25,7 +25,7 @@ const PostSingle = ({ post, mdxContent, slug, posts }) => {
   }
 
   const { title, date, image, author, categories } = frontmatter;
-  const description = summary || (content ? content.slice(0, 120) : '');
+  const description = summary || (typeof content === 'string' ? content.slice(0, 120) : '');
   const similarPosts = similerItems(post, posts, slug);
 
   return (
