@@ -1,14 +1,5 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "package.json",
-      "use": "@vercel/node",
-      "config": {
-        "installCommand": "npm install --legacy-peer-deps"
-      }
-    }
-  ],
   "env": {
     "NEXT_PUBLIC_CONTENTFUL_SPACE_ID": "mm85g2nwd1ln",
     "NEXT_PUBLIC_CONTENTFUL_ACCESS_TOKEN": "xO-J29EBqEtr3xR88u0IEFd-IW6RqjpdpzkTS0BUPyU"
