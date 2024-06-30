@@ -3,18 +3,16 @@ import client from '@lib/contentful';
 import PostSingle from '@layouts/PostSingle';
 
 const Article = ({ post, content, slug, posts }) => {
-  if (!post || post.length === 0) {
+  if (!post) {
     console.error('No post data available');
     return <div>No post data available.</div>;
   }
 
-  const { frontmatter } = post[0];  // Assuming frontmatter is a property you expect
-
+  // Use post directly since it's an object, not an array
   return (
     <PostSingle content={content} slug={slug} post={post} posts={posts} />
   );
 };
-
 
 export default Article;
 
@@ -40,14 +38,13 @@ export const getStaticProps = async ({ params }) => {
       return { notFound: true };
     }
 
-    const post = postRes.items[0];
-    const content = post.fields.details || {};
-    const postFields = post.fields || {};
+    const post = postRes.items[0].fields;
+    const content = post.details || {};
 
     return {
       props: {
-        post: JSON.parse(JSON.stringify(postFields)),
-        content: JSON.parse(JSON.stringify(content)),
+        post: post,
+        content: content,
         slug,
       },
     };
