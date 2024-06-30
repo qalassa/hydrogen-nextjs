@@ -26,30 +26,29 @@ export const getStaticPaths = async () => {
 // get post single content
 export const getStaticProps = async ({ params }) => {
   const { single } = params;
+  try {
+    const postRes = await client.getEntries({
+      content_type: 'article',
+      'fields.slug': single,
+    });
 
-  const allPosts = await client.getEntries({ content_type: 'article' });
-  const postRes = await client.getEntries({
-    content_type: 'article',
-    'fields.slug': single,
-  });
+    if (!postRes.items.length) {
+      console.log(`No post found for slug: ${single}`);
+      return { notFound: true };
+    }
 
-  const post = postRes.items[0];
-  const content = post ? post.fields.body : '';
+    const post = postRes.items[0];
+    const content = post.fields.body;
 
-  const posts = allPosts.items.map((item) => ({
-    title: item.fields.title,
-    slug: item.fields.slug,
-    publishedDate: item.fields.publishedDate,
-    category: item.fields.category,
-    content: item.fields.body,
-  }));
-
-  return {
-    props: {
-      post: post ? JSON.parse(JSON.stringify(post.fields)) : null,
-      content: JSON.parse(JSON.stringify(content)),
-      slug,
-      posts: JSON.parse(JSON.stringify(posts)),
-    },
-  };
+    return {
+      props: {
+        post: JSON.parse(JSON.stringify(post.fields)),
+        content: JSON.parse(JSON.stringify(content)),
+        slug: single,
+      },
+    };
+  } catch (error) {
+    console.error(`Error fetching single post ${single}:`, error);
+    return { notFound: true };
+  }
 };
