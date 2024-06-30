@@ -1,6 +1,6 @@
 import { getArticle } from "../../lib/api.js";
 import PostSingle from '@layouts/PostSingle';
-
+import client from "../../lib/client.js"
 const Article = ({ post, content, slug, posts }) => {
   return (
     <PostSingle content={content} slug={slug} post={post} posts={posts} />
