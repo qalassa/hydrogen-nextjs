@@ -21,13 +21,13 @@ const Post = ({ post, className }) => {
         </ul>
         <p className="my-4">{dateFormat(post.publishedDate)}</p>
         <h2 className="h3 mb-2 font-normal">
-          <Link href={`/${slugify(post.slug)}`} className="block">
+          <Link href={`/categories/${slugify(post.categories[0])}/${post.slug}`} className="block">
             {post.title}
           </Link>
         </h2>
         <Link
           className="btn-link mt-7 inline-flex items-center hover:text-primary"
-          href={`/${slugify(post.slug)}`}
+          href={`/categories/${slugify(post.categories[0])}/${post.slug}`}
         >
           Continue Reading
           <svg
