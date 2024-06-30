@@ -26,22 +26,29 @@ const Category = ({ posts, slug }) => {
 export default Category;
 
 export const getStaticPaths = async () => {
-  const res = await client.getEntries({ content_type: 'article' });
-  const categories = res.items.map(item => item.fields.categoryName || 'uncategorized'); // Update field name
-  const uniqueCategories = [...new Set(categories)];
+  try {
+    const res = await client.getEntries({ content_type: 'article' });
+    const categories = res.items.map(item => item.fields.categoryName || 'uncategorized');
+    const uniqueCategories = [...new Set(categories)];
 
-  const paths = uniqueCategories.map(category => ({
-    params: { category: encodeURIComponent(category).toLowerCase() }
-  }));
+    const paths = uniqueCategories.map(category => ({
+      params: { category: encodeURIComponent(category).toLowerCase() }
+    }));
 
-  return { paths, fallback: 'blocking' };
+    console.log('Generated paths for categories:', paths);
+
+    return { paths, fallback: 'blocking' };
+  } catch (error) {
+    console.error('Error generating paths for categories:', error);
+    return { paths: [], fallback: false };
+  }
 };
 
 export const getStaticProps = async ({ params }) => {
   try {
     const res = await client.getEntries({
       content_type: 'article',
-      'fields.categoryName': params.category, // Update field name
+      'fields.categoryName': params.category,
     });
 
     if (!res.items.length) {
@@ -54,10 +61,12 @@ export const getStaticProps = async ({ params }) => {
       body: item.fields.body,
       slug: item.fields.slug,
       publishedDate: item.fields.publishedDate,
-      category: item.fields.categoryName, // Update field name
+      category: item.fields.categoryName,
     }));
 
     const sortedPosts = posts.sort((a, b) => new Date(b.publishedDate) - new Date(a.publishedDate));
+
+    console.log(`Fetched posts for category ${params.category}:`, sortedPosts);
 
     return {
       props: {
