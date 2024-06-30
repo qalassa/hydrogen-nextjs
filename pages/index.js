@@ -8,7 +8,7 @@ import Social from "@layouts/components/Social";
 import { sortByDate } from "@lib/utils/sortFunctions";
 import { markdownify } from "@lib/utils/textConverter";
 import { getArticles ,getAllArticles } from '../lib/api';
-
+import { Analytics } from "@vercel/analytics/react"
 const { blog_folder } = config.settings;
 
 const Home = ({ posts }) => {
