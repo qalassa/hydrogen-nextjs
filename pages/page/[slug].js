@@ -6,7 +6,7 @@ import Post from '@layouts/components/Post';
 import client from '@lib/contentful';
 import { sortByDate } from '@lib/utils/sortFunctions';
 const { blog_folder, pagination } = config.settings;
-import { getArticles ,getAllArticles } from '../../lib/api';
+import { getArticle ,getAllArticles } from '../../lib/api';
 
 // blog pagination
 const BlogPagination = ({ posts, currentPage, pagination }) => {
