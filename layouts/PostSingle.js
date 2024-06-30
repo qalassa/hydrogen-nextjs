@@ -10,28 +10,22 @@ import Image from "next/image";
 import Link from "next/link";
 import Base from "./Baseof";
 import Post from "./components/Post";
-// why not updating the deployment?
+
 const PostSingle = ({ post, mdxContent, slug, posts }) => {
-  if (!post || post.length === 0) {
+  if (!post) {
     console.error('No post data available');
     return <div>No post data available.</div>;
   }
 
-  const { frontmatter, content } = post[0];
+  const { frontmatter, content, summary } = post;
 
   if (!frontmatter) {
     console.error('No frontmatter available');
     return <div>No frontmatter available.</div>;
   }
 
-  let { description, title, date, image, categories } = frontmatter;
-
-  if (!categories) {
-    console.error('No categories available');
-    categories = []; // Default to an empty array if categories are not available
-  }
-
-  description = description ? description : content.slice(0, 120);
+  const { title, date, image, author, categories } = frontmatter;
+  const description = summary || (content ? content.slice(0, 120) : '');
   const similarPosts = similerItems(post, posts, slug);
 
   return (
@@ -41,7 +35,7 @@ const PostSingle = ({ post, mdxContent, slug, posts }) => {
           <div className="row">
             <div className="mx-auto lg:col-10">
               <Link
-                className="mb-12  inline-flex items-center text-primary hover:underline"
+                className="mb-12 inline-flex items-center text-primary hover:underline"
                 href="/"
               >
                 <svg
@@ -74,13 +68,13 @@ const PostSingle = ({ post, mdxContent, slug, posts }) => {
                 <ul className="mt-4 mb-8 text-text">
                   <li className="mb-2 mr-4 inline-block">
                     <ul>
-                      {frontmatter.categories && frontmatter.categories.map((category, i) => (
-    <li className="inline-block" key={`category-${i}`}>
-        <Link href={`/categories/${slugify(category)}`} className="mr-3 text-primary">
-            {humanize(category)}
-        </Link>
-    </li>
-))}
+                      {categories && categories.map((category, i) => (
+                        <li className="inline-block" key={`category-${i}`}>
+                          <Link href={`/categories/${slugify(category)}`} className="mr-3 text-primary">
+                            {humanize(category)}
+                          </Link>
+                        </li>
+                      ))}
                       |
                     </ul>
                   </li>
@@ -91,7 +85,7 @@ const PostSingle = ({ post, mdxContent, slug, posts }) => {
                     |
                   </li>
                   <li className="mb-2 mr-4 inline-block">
-                    {readingTime(content)}
+                    {content && readingTime(content)}
                   </li>
                 </ul>
                 <div className="content text-left">
