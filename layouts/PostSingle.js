@@ -12,22 +12,24 @@ import Base from "./Baseof";
 import Post from "./components/Post";
 
 const PostSingle = ({ post, mdxContent, slug, posts }) => {
-  if (!post) {
-    console.error('No post data available');
+  if (!post || post.length === 0) {
     return <div>No post data available.</div>;
   }
 
-  // Ensure frontmatter is also checked for existence
-  const { frontmatter, content } = post;
+  const { frontmatter, content } = post[0];
   if (!frontmatter) {
-    console.error('No frontmatter available');
-    return <div>No frontmatter available.</div>;
+    return <div>Post has no frontmatter.</div>;
   }
 
-  const { title, date, image, categories } = frontmatter;
-  // Properly initialize description with a fallback
-  const description = frontmatter.description || (content && typeof content === 'string' ? content.slice(0, 120) : 'Default description or other handling logic');
-  const similarPosts = similerItems(posts, post, slug); // Make sure this function can handle undefined post value
+  let { description, title, date, image, categories } = frontmatter;
+  description = description || (content ? content.slice(0, 120) : 'No description available');
+  
+  if (!posts) {
+    console.error("Posts data is missing.");
+    posts = []; // Set to empty array to prevent further errors
+  }
+
+  const similarPosts = similerItems(post, posts, slug);
 
 
   return (
