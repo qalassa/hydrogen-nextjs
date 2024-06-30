@@ -1,7 +1,7 @@
 import { BLOCKS, INLINES } from '@contentful/rich-text-types';
 import client from '@lib/contentful';
 import PostSingle from '@layouts/PostSingle';
-// deleted the article from contentful
+
 const Article = ({ post, content, slug, posts }) => {
   return (
     <PostSingle content={content} slug={slug} post={post} posts={posts} />
