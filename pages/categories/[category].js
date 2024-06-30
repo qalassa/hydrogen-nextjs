@@ -1,7 +1,7 @@
 import client from '@lib/contentful';
 import Base from '@layouts/Baseof';
 import Post from '@layouts/components/Post';
-//m
+
 const Category = ({ posts, slug }) => {
   return (
     <Base>
@@ -27,7 +27,7 @@ export default Category;
 
 export const getStaticPaths = async () => {
   const res = await client.getEntries({ content_type: 'article' });
-  const categories = res.items.map(item => item.fields.category || 'uncategorized');
+  const categories = res.items.map(item => item.fields.categoryName || 'uncategorized'); // Update field name
   const uniqueCategories = [...new Set(categories)];
 
   const paths = uniqueCategories.map(category => ({
@@ -37,13 +37,11 @@ export const getStaticPaths = async () => {
   return { paths, fallback: 'blocking' };
 };
 
-
-
 export const getStaticProps = async ({ params }) => {
   try {
     const res = await client.getEntries({
       content_type: 'article',
-      'fields.category': params.category,
+      'fields.categoryName': params.category, // Update field name
     });
 
     if (!res.items.length) {
@@ -56,7 +54,7 @@ export const getStaticProps = async ({ params }) => {
       body: item.fields.body,
       slug: item.fields.slug,
       publishedDate: item.fields.publishedDate,
-      category: item.fields.category,
+      category: item.fields.categoryName, // Update field name
     }));
 
     const sortedPosts = posts.sort((a, b) => new Date(b.publishedDate) - new Date(a.publishedDate));
@@ -72,4 +70,3 @@ export const getStaticProps = async ({ params }) => {
     return { props: { posts: [], slug: params.category } };
   }
 };
-
