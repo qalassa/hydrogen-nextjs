@@ -3,6 +3,9 @@ import client from '@lib/contentful';
 import PostSingle from '@layouts/PostSingle';
 
 const Article = ({ post, content, slug, posts }) => {
+  if (!post) {
+    return <div>Post not found</div>;
+  }
   return (
     <PostSingle content={content} slug={slug} post={post} posts={posts} />
   );
