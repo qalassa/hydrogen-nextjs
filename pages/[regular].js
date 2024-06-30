@@ -9,7 +9,7 @@ const RegularPages = ({ data }) => {
   const { title, meta_title, description, image, noindex, canonical, layout } =
     data.frontmatter;
   const { content } = data;
-  console.log(typeof content); // This will show what type 'content' is when the code runs
+console.log('Content:', content, 'Type:', typeof content);
 
   return (
     <Base
