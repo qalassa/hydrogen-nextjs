@@ -43,4 +43,34 @@ export const getStaticPaths = async () => {
 
   for (let i = 1; i <= totalPages; i++) {
     paths.push({
-      para
+      params: { slug: i.toString() }, // Ensure slug is a string
+    });
+  }
+
+  return {
+    paths,
+    fallback: false,
+  };
+};
+
+// get blog pagination content
+export const getStaticProps = async ({ params }) => {
+  const currentPage = parseInt((params && params.slug) || '1');
+
+  const res = await client.getEntries({ content_type: 'article' });
+  const posts = res.items.map((item) => ({
+    title: item.fields.title,
+    slug: item.fields.slug,
+    publishedDate: item.fields.publishedDate,
+    category: item.fields.category,
+    content: item.fields.body,
+  }));
+
+  return {
+    props: {
+      pagination,
+      posts: JSON.parse(JSON.stringify(posts)), // Ensure serializability
+      currentPage,
+    },
+  };
+};
