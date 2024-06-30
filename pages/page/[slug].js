@@ -1,3 +1,5 @@
+// [slug] (1).js
+
 import Pagination from '@components/Pagination';
 import config from '@config/config.json';
 import Post from '@layouts/components/Post';
@@ -69,7 +71,7 @@ export const getStaticProps = async ({ params }) => {
       slug: item.fields.slug,
       publishedDate: item.fields.publishedDate,
       category: item.fields.categoryName,
-      content: item.fields.details,
+      content: item.fields.body,
     }));
 
     return {
@@ -84,4 +86,3 @@ export const getStaticProps = async ({ params }) => {
     return { props: { posts: [], currentPage } };
   }
 };
-
