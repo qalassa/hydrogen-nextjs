@@ -3,8 +3,6 @@ import { dateFormat } from "@lib/utils/dateFormat";
 import Link from "next/link";
 import { slugify } from "@lib/utils/textConverter"; // Assuming you have a utility to slugify text
 
-const { blog_folder } = config.settings;
-
 const Post = ({ post, className }) => {
   return (
     <div className={className}>
@@ -23,13 +21,13 @@ const Post = ({ post, className }) => {
         </ul>
         <p className="my-4">{dateFormat(post.publishedDate)}</p>
         <h2 className="h3 mb-2 font-normal">
-          <Link href={`/categories/${slugify(post.categories[0])}/${post.slug}`} className="block">
+          <Link href={`/${slugify(post.slug)}`} className="block">
             {post.title}
           </Link>
         </h2>
         <Link
           className="btn-link mt-7 inline-flex items-center hover:text-primary"
-          href={`/categories/${slugify(post.categories[0])}/${post.slug}`}
+          href={`/${slugify(post.slug)}`}
         >
           Continue Reading
           <svg
